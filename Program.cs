@@ -1,3 +1,13 @@
+var connectionString = "Host=localhost;Username=kevin;Password=1234;Database=test";
+var personRepository = new PersonRepository(connectionString);
+
+var persons = await personRepository.GetAllAsync();
+
+foreach(var person in persons)
+{
+    Console.WriteLine($"ID: {person.Id}, Name: {person.Name}, Email: {person.Email}");
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,3 +33,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
