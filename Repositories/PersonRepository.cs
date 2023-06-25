@@ -2,6 +2,7 @@ using System;
 using Npgsql;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 public class Person
 {
@@ -17,11 +18,11 @@ public interface IPersonRepository
 
 public class PersonRepository : IPersonRepository
 {
-    private string _connectionString;
+    private readonly string? _connectionString;
 
-    public PersonRepository(string connectionString)
+    public PersonRepository(IConfiguration configuration)
     {
-        _connectionString = connectionString;
+        _connectionString = configuration.GetConnectionString("MyDatabaseConnection");
     }
 
     public async Task<List<Person>> GetAllAsync()
