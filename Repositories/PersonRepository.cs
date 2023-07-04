@@ -7,12 +7,13 @@ using Microsoft.Extensions.Configuration;
 public class Person
 {
     public int? Id { get; set; }
-    public string? Name { get; set; }
-    public string? Email { get; set; }
+    public string Name { get; set; } = String.Empty;
+    public string Email { get; set; } = String.Empty;
 }
 
 public interface IPersonRepository
 {
+    Task AddAsync(Person person);
     Task<List<Person>> GetAllAsync();
 }
 
@@ -49,6 +50,22 @@ public class PersonRepository : IPersonRepository
         }
 
         return persons;
+    }
+
+    public async Task AddAsync(Person person)
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var insertCommand = "INSERT INTO person (name, email) VALUES (@name, @email);";
+
+        await using (var command = new NpgsqlCommand(insertCommand, connection))
+        {
+            command.Parameters.AddWithValue("name", person.Name);
+            command.Parameters.AddWithValue("email", person.Email);
+
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }
 

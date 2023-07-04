@@ -30,6 +30,27 @@ namespace YourProjectNamespace.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+        // POST: api/person
+        [HttpPost]
+        public async Task<ActionResult<Person>> Post(Person person)
+        {
+            try
+            {
+                if (person == null)
+                {
+                    return BadRequest("Person object is null");
+                }
+
+                await _personRepository.AddAsync(person);
+
+                return CreatedAtAction(nameof(Get), new { id = person.Id }, person);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }
 
